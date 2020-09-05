@@ -1,0 +1,20 @@
+{
+  "mod_reference": "FLAGGONCustom",
+  "name": "FLAGGONCustom",
+  "version": "0.0.1",
+  "sml_version": "2.1.2",
+  "description": "An addon to FLAGS that loads custom flag images.",
+  "authors": ["nex#8068"],
+  "objects": [
+    {
+      "type": "sml_mod",
+      "path": "UE4-FLAGGONCustom-Win64-Shipping.dll"
+    }
+  ],
+  "dependencies": {
+    "SML": "^2.0.0",
+    "FLAGSMod": ">=2.0.5"
+  },
+  "optional_dependencies": {
+  }
+}

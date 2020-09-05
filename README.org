@@ -1,0 +1,21 @@
+* FLAGGONCustom
+
+Custom image file loader addon for Satisfactory FLAGS Mod.
+
+* Dev Project Setup
+
+1. Follow [[https://docs.ficsit.app/satisfactory-modding/2.2.0/Development/BeginnersGuide/project_setup.html][SML Project Setup Guide]]
+2. Copy or link Source folder to SML-Shipping-Dev-Win64/Source/FLAGGONCustom
+3. Regenerate project files
+4. Cross fingers
+
+* How it works
+
+We create transient textures named after the hash of the image file contents. To avoid having nine billion textures loaded all the time, we intercept calls to FindStaticObject that match our naming pattern, and sneakily create the texture on demand, and pretend it was always there.
+
+If there is a better way to have named assets that you can create on demand instead of loading from an actual asset file, I couldn't find it.
+
+* Notes
+
+ - We can't extend Texture2D because it is MinimalAPI and results in unresolved external references
+ - We can't create all our Textures and AddToRoot and call it a day because then all the normal game textures downres to ugly blocky versions forever.
