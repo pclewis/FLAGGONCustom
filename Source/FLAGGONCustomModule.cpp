@@ -432,20 +432,32 @@ UTexture2D* FFLAGGONCustomModule::FindTexture(const FString& Name)
 #define JSON(x) TEXT(#x)
 
 TSharedPtr<FJsonObject> CreateConfigDefaults() {
-	FString defaultConfig = JSON({"folders": ["%USERDIR%/../Pictures"]});
+	FString defaultConfig = JSON({"folders": ["%USERDIR%/My Games/FactoryGame/flags"]});
 	return SML::ParseJsonLenient(defaultConfig);
 }
 
 void FFLAGGONCustomModule::StartupModule()
 {
 	DEBUG("Starting up");
-	TSharedRef<FJsonObject> config = SML::ReadModConfig("FLAGGONCustom", CreateConfigDefaults().ToSharedRef());
+	TSharedRef<FJsonObject> Config = SML::ReadModConfig("FLAGGONCustom", CreateConfigDefaults().ToSharedRef());
+
+	TArray<TSharedPtr<FJsonValue>> ConfigFolders = Config->GetArrayField("folders");
+
+	FPaths::ProjectUserDir();
+
+	if (ConfigFolders.Num() == 1 && ConfigFolders[0]->AsString().Equals( TEXT("%USERDIR%/../Pictures") ) )
+	{
+		WARNING("Replacing 0.0.1 default config with new default config.");
+		Config = CreateConfigDefaults().ToSharedRef();
+		SML::WriteModConfig("FLAGGONCustom", Config);
+		ConfigFolders = Config->GetArrayField("folders");
+	}
 
 	FlagTypes.Add(TEXT("1x1"),          FFlagType{ TEXT("1x1"),         TEXT("1x1"),          1 });
 	FlagTypes.Add(TEXT("2x1"),          FFlagType{ TEXT("2x1"),         TEXT("2x1"),          2 });
 	FlagTypes.Add(TEXT("Stacked_2x1a"), FFlagType{ TEXT("Stacked 2x1"), TEXT("Stacked_2x1a"), 0 });
 
-	for (TSharedPtr<FJsonValue> Folder : config->GetArrayField("folders"))
+	for (TSharedPtr<FJsonValue> Folder : ConfigFolders)
 	{
 		FString Path = Folder->AsString().Replace(TEXT("%USERDIR%"), FPlatformProcess::UserDir());
 		FPaths::CollapseRelativeDirectories(Path);
