@@ -1,7 +1,7 @@
 {
   "mod_reference": "FLAGGONCustom",
   "name": "FLAGGONCustom",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "sml_version": "2.1.2",
   "description": "An addon to FLAGS that loads custom flag images.",
   "authors": ["nex#8068"],
