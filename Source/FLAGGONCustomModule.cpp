@@ -338,18 +338,29 @@ void FFLAGGONCustomModule::HookInteractable(UWorld* World, const FFlagType& Flag
 			HookBlueprintFunction(Function,
 				[this, ClassName, FlagType, World](FBlueprintHookHelper& helper) {
 					DEBUG("%s::'Populate Menu': exit", *ClassName);
-					UObject* ManagerObject = *helper.GetLocalVarPtr<UObjectProperty>(TEXT("Addon Manager"));
-					RemoveTexturesFromManager(ManagerObject, FlagType);
+					if (UObject* ManagerObject = *helper.GetLocalVarPtr<UObjectProperty>(TEXT("Addon Manager")))
+					{
+						RemoveTexturesFromManager(ManagerObject, FlagType);
+					}
+					else
+					{
+						WARNING("%s::'Populate Menu'::exit - No Addon Manager?", *ClassName);
+					}
 				},
 				EPredefinedHookOffset::Return);
 
 			HookBlueprintFunction(Function,
 				[this, ClassName, FlagType, World](FBlueprintHookHelper& helper) {
 					DEBUG("%s::'Populate Menu': enter", *ClassName);
-					UObject* ManagerObject = *helper.GetLocalVarPtr<UObjectProperty>(TEXT("Addon Manager"));
-					bInterceptReferences = false;
-					AddTexturesToManager(ManagerObject, FlagType);
-					bInterceptReferences = true;
+					if (UObject* ManagerObject = *helper.GetLocalVarPtr<UObjectProperty>(TEXT("Addon Manager"))) {
+						bInterceptReferences = false;
+						AddTexturesToManager(ManagerObject, FlagType);
+						bInterceptReferences = true;
+					}
+					else
+					{
+						WARNING("%s::'Populate Menu'::enter - No Addon Manager?", *ClassName);
+					}
 				},
 				EPredefinedHookOffset::Start);
 		}
